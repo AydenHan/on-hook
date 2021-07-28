@@ -6,6 +6,7 @@
 '''
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from Plan import Plan
 
 class UI_Window(QtWidgets.QWidget):
     def __init__(self):
@@ -20,6 +21,7 @@ class UI_Window(QtWidgets.QWidget):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.tabWidget = QtWidgets.QTabWidget(Window)
         self.tabWidget.setObjectName("tabWidget")
+        # -------------------Tab1-------------------#
         self.tab = QtWidgets.QWidget()
         # self.tab.setStyleSheet('background-color:#37474F')
         self.tab.setObjectName("tab")
@@ -72,6 +74,7 @@ class UI_Window(QtWidgets.QWidget):
         self.layoutHP1.addWidget(self.stopBtn)
         self.layoutVP1.addLayout(self.layoutHP1)
         self.tabWidget.addTab(self.tab, "")
+        # -------------------Tab2-------------------#
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.tab_2)
@@ -108,11 +111,14 @@ class UI_Window(QtWidgets.QWidget):
         self.addBtn.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.addBtn.setObjectName("addBtn")
         self.layoutHP2.addWidget(self.addBtn)
-        self.verticalLayout_2.addWidget(self.widget_headP2)
+        self.verticalLayout_2.addWidget(self.widget_headP2, 0, QtCore.Qt.AlignTop)
         self.layoutVP2 = QtWidgets.QVBoxLayout()
         self.layoutVP2.setObjectName("layoutVP2")
+        # self.layoutVP2.setAlignment(QtCore.Qt.AlignBottom)
+        self.layoutVP2.addStretch(1)
         self.verticalLayout_2.addLayout(self.layoutVP2)
         self.tabWidget.addTab(self.tab_2, "")
+        #-------------------Tab3-------------------#
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.tab_3)
@@ -170,6 +176,7 @@ class UI_Window(QtWidgets.QWidget):
         self.layoutHP3_2.addWidget(self.deleteBtn)
         self.verticalLayout_3.addWidget(self.widget_footP3)
         self.tabWidget.addTab(self.tab_3, "")
+        # -------------------Tab4-------------------#
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.tab_4)

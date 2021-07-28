@@ -5,7 +5,7 @@
 @Note : 界面逻辑部分
 '''
 
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget,QBoxLayout
 from PyQt5.QtCore import Qt
 from UI import UI_Window
 from Plan import Plan
@@ -17,6 +17,7 @@ class Window(UI_Window):
         self.bllTab1()
         self.bllTab2()
         self.bllTab3()
+
 
     def bllTab1(self):
         pass
@@ -33,7 +34,9 @@ class Window(UI_Window):
     def addPlan(self):
         plan = Plan()
         all_count = self.layoutVP2.count()
-        self.layoutVP2.insertWidget(all_count+1, plan, 0, Qt.AlignJustify)
+        self.layoutVP2.insertWidget(all_count-1, plan, 0, Qt.AlignTop)
+
+
 
     # tab3部分
 

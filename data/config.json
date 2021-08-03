@@ -1,0 +1,26 @@
+{
+  "plan": [
+    {
+      "id": "\u5fa1\u9b42\u3001\u89c9\u9192\u3001\u5fa1\u7075",
+      "node": [
+        "challenge.png",
+        "defeat.png",
+        "victory.png",
+        "award.png"
+      ]
+    },
+    {
+      "id": "\u7ed3\u754c\u7a81\u7834",
+      "node": [
+        "award.png"
+      ]
+    },
+    {
+      "id": "\u56f028",
+      "node": [
+        "award.png",
+        "challenge.png"
+      ]
+    }
+  ]
+}

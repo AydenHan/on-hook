@@ -45,15 +45,19 @@ class UI_Plan(QWidget):
         self.doubleBtn.setMaximumSize(45, 30)
         # self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
-    def editorStatus(self):
+    def editStatus(self):
+        self.textEdit_plan.setText(self.label_plan.text())
         self.doubleBtn.setText(u'确认')
         self.textEdit_plan.show()
+        self.selectBtn.show()
         self.label_plan.hide()
 
     def saveStatus(self):
         self.label_plan.setText(self.textEdit_plan.toPlainText())
         self.doubleBtn.setText(u'删除')
+        self.selectBtn.hide()
         self.textEdit_plan.hide()
         self.label_plan.show()
+
 
 

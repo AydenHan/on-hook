@@ -5,11 +5,14 @@
 @Note : 挂机脚本类
 '''
 
-from PyQt5.QtCore import QThread,pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal
 from datetime import datetime
-import pyautogui as pag,cv2
-import random,math
+import pyautogui as pag
+import cv2
+import random
+import math
 import gevent
+
 
 class OnHook(QThread):
     finish = pyqtSignal()
@@ -76,9 +79,9 @@ class OnHook(QThread):
                 pag.click(x, y, duration=move_time, clicks=click_num,
                           interval=click_time)  # 点击
                 self.pw.rstPrintf("%s, %s, ClickPos:(%s, %s)"
-                      % (pic, self.turn, x, y))
+                                  % (pic, self.turn, x, y))
 
-                if self.turn == self.times:
+                if self.turn == self.times:  # ?
                     self.finish.emit()
 
                 gevent.sleep(0.9)  # 该次协程结束后卡一定时间防止二次识别成功，在切换界面后误触

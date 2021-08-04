@@ -7,8 +7,10 @@
 
 from PyQt5.QtWidgets import QWidget,QBoxLayout
 from PyQt5.QtCore import Qt,pyqtSignal
+from datetime import datetime
 from UI import UI_Window
 from Plan import Plan
+from OnHook import OnHook
 from Data_Json import JsonHandle
 
 
@@ -17,8 +19,11 @@ class Window(UI_Window):
         super().__init__()
         # 数据
         self.json_path = '../data/config.json'
+        self.screenshot_path = '../screenshot/'
         self.data = JsonHandle.getJson(self.json_path)
+        self.time_start = datetime.now()
         # 各模块
+        # self.on_hook = OnHook()
         self.bllTab1()
         self.bllTab2()
         self.bllTab3()
@@ -29,16 +34,49 @@ class Window(UI_Window):
         pass
 
     def bllTab1(self):
-        pass
+        # 初始化
+        self.selectPlan()
+        # 事件绑定
+        self.startBtn.clicked.connect(self.startOnHook)
+        self.stopBtn.clicked.connect(self.stopOnHook)
 
     def bllTab2(self):
-        self.addBtn.clicked.connect(self.addPlan)
+        # 初始化
         self.loadPlan()
+        # 事件绑定
+        self.addBtn.clicked.connect(self.addPlan)
 
     def bllTab3(self):
         pass
 
     # tab1部分
+    def rstPrintf(self, mes):
+        self.textBrowser_feedback.append(mes)  # 在指定的区域显示提示信息
+        self.cursot = self.textBrowser_feedback.textCursor()
+        self.textBrowser_feedback.moveCursor(self.cursot.End)
+
+    def selectPlan(self):   #下拉选项
+        for item in self.data['plan']:
+            self.comboBox_plan.addItem(item['id'])
+
+    def startOnHook(self):
+        index = self.comboBox_plan.currentIndex()
+        times = self.textEdit_time.toPlainText()
+        if not times:
+            times = 0
+        else:
+            times = int(times)
+        self.on_hook = OnHook(self, self.data['plan'][index]['node'], times)
+        self.on_hook.finish.connect(self.stopOnHook)
+        self.on_hook.start()
+        self.rstPrintf("——————————开始——————————")
+        self.time_start = datetime.now()
+
+    def stopOnHook(self):
+        turn = self.on_hook.turn
+        self.on_hook.quit()
+        del self.on_hook
+        self.rstPrintf("共完成: %s轮, 用时: %s" % (turn, datetime.now() - self.time_start))
 
     # tab2部分
     def createPlan(self, data):
@@ -62,6 +100,7 @@ class Window(UI_Window):
                 self.createPlan(i)
 
     def planHandle(self, val, id):
+        # 数据部分
         if not val:
             i = 0
             for x in self.data['plan']:
@@ -69,6 +108,9 @@ class Window(UI_Window):
                 if x['id'] == id:
                     self.data['plan'].pop(i - 1)
         JsonHandle.updateJson(self.json_path, self.data)
+        # UI部分
+        self.comboBox_plan.clear()
+        self.selectPlan()
 
     # tab3部分
 

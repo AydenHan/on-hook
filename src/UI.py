@@ -182,6 +182,7 @@ class UI_Window(QtWidgets.QWidget):
         self.label_instruction.setFont(font)
         self.label_instruction.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.label_instruction.setObjectName("label_instruction")
+        self.label_instruction.setWordWrap(True)
         self.verticalLayout_4.addWidget(self.label_instruction)
         self.tabWidget.addTab(self.tab_4, "")
         self.horizontalLayout.addWidget(self.tabWidget)
@@ -206,11 +207,7 @@ class UI_Window(QtWidgets.QWidget):
         self.screenshotBtn.setText(_translate("Window", "截图"))
         self.deleteBtn.setText(_translate("Window", "删除该截图"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("Window", "截图小工具"))
-        self.label_instruction.setText(_translate("Window", '''
-            使用说明：
-            1.
-            2.
-            3.
+        self.label_instruction.setText(_translate("Window", '''使用说明：\n只完成了tab1和tab2的功能\nemmmm太臃肿了决定换个dev
         '''))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("Window", "说明书"))
 

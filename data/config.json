@@ -12,14 +12,20 @@
     {
       "id": "\u7ed3\u754c\u7a81\u7834",
       "node": [
-        "award.png"
+        "attack.png",
+        "award.png",
+        "breakaim.png",
+        "defeat.png",
+        "refresh.png"
       ]
     },
     {
       "id": "\u56f028",
       "node": [
         "award.png",
-        "challenge.png"
+        "explore.png",
+        "leader.png",
+        "target.png"
       ]
     }
   ]

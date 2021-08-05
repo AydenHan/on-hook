@@ -5,17 +5,14 @@
 @Note : 挂机脚本类
 '''
 
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread,pyqtSignal
 from datetime import datetime
-import pyautogui as pag
-import cv2
-import random
-import math
+import pyautogui as pag,cv2
+import random,math
 import gevent
 
-
 class OnHook(QThread):
-    finish = pyqtSignal()
+    finished = pyqtSignal()
 
     def __init__(self, parent, data, times):
         super().__init__()
@@ -23,12 +20,18 @@ class OnHook(QThread):
         self.pw = parent
         self.times = times
         self.turn = 0
+        self.g_list = []
 
     def run(self):
         matrix = []
         for node in self.data:
             matrix.append(gevent.spawn(self.clickHandle, node))
+            self.g_list = matrix
         gevent.joinall(matrix)
+
+    def quit(self):
+        for i in self.g_list:
+            gevent.kill(i)
 
     def clickHandle(self, picture):
         while True:
@@ -76,12 +79,13 @@ class OnHook(QThread):
                     x = random.randint(pos[0], pos[0] + pos[2])
                     y = random.randint(pos[1], pos[1] + pos[3])
 
+                # 模拟点击
                 pag.click(x, y, duration=move_time, clicks=click_num,
                           interval=click_time)  # 点击
-                self.pw.rstPrintf("%s, %s, ClickPos:(%s, %s)"
-                                  % (pic, self.turn, x, y))
+                self.pw.rstPrintf("%s, %s, 点击位置: (%s, %s)"
+                      % (pic, self.turn, x, y))
 
-                if self.turn == self.times:  # ?
-                    self.finish.emit()
+                if self.turn == self.times:
+                    self.finished.emit()
 
                 gevent.sleep(0.9)  # 该次协程结束后卡一定时间防止二次识别成功，在切换界面后误触

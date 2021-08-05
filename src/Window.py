@@ -5,12 +5,12 @@
 @Note : 界面逻辑部分
 '''
 
-from PyQt5.QtWidgets import QWidget,QBoxLayout
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtCore import Qt
 from datetime import datetime
 from UI import UI_Window
 from Plan import Plan
 from OnHook import OnHook
+from ScreenShot import CaptureScreen
 from Data_Json import JsonHandle
 
 
@@ -47,7 +47,7 @@ class Window(UI_Window):
         self.addBtn.clicked.connect(self.addPlan)
 
     def bllTab3(self):
-        pass
+        self.screenshotBtn.clicked.connect(self.screenShot)
 
     # tab1部分
     def rstPrintf(self, mes):
@@ -67,16 +67,16 @@ class Window(UI_Window):
         else:
             times = int(times)
         self.on_hook = OnHook(self, self.data['plan'][index]['node'], times)
-        self.on_hook.finish.connect(self.stopOnHook)
+        self.on_hook.finished.connect(self.stopOnHook)
         self.on_hook.start()
-        self.rstPrintf("——————————开始——————————")
+        self.rstPrintf("—————————开始—————————")
         self.time_start = datetime.now()
 
     def stopOnHook(self):
         turn = self.on_hook.turn
         self.on_hook.quit()
         del self.on_hook
-        self.rstPrintf("共完成: %s轮, 用时: %s" % (turn, datetime.now() - self.time_start))
+        self.rstPrintf("共完成: %s轮, 用时: %s\n" % (turn, datetime.now() - self.time_start))
 
     # tab2部分
     def createPlan(self, data):
@@ -113,4 +113,7 @@ class Window(UI_Window):
         self.selectPlan()
 
     # tab3部分
-
+    def screenShot(self):
+        shot = CaptureScreen()
+        shot.show()
+        print(111)

@@ -10,15 +10,15 @@ from datetime import datetime
 import pyautogui as pag,cv2
 import random,math
 import gevent
+import QSS
 
 class OnHook(QThread):
-    finished = pyqtSignal()
+    times_change = pyqtSignal(int)
 
-    def __init__(self, parent, data, times):
+    def __init__(self, parent, data):
         super().__init__()
         self.data = data
         self.pw = parent
-        self.times = times
         self.turn = 0
         self.g_list = []
 
@@ -35,7 +35,7 @@ class OnHook(QThread):
 
     def clickHandle(self, picture):
         while True:
-            pic = self.pw.screenshot_path + picture  # 截图保存的路径（建议截图区域内像素分明又不是很复杂）
+            pic = QSS.screenshot + picture  # 截图保存的路径（建议截图区域内像素分明又不是很复杂）
             point = pag.locateOnScreen(pic, confidence=0.8)
             pic = pic[pic.rfind('/')+1:pic.rfind('.png')].ljust(9)  # 输出处理
             if point is None:
@@ -53,6 +53,7 @@ class OnHook(QThread):
                 # 御魂觉醒御灵等
                 if pic == "challenge" or pic == "attack   ":
                     self.turn += 1
+                    self.times_change.emit(self.turn)
                 elif pic == "award    ":  # 进一步掩盖机械行为
                     x = random.randint(point[0], point[0] + point[2]*5)
                     y = random.randint(point[1] - point[3]
@@ -74,7 +75,7 @@ class OnHook(QThread):
                 # 困28
                 elif pic == "target   ":  # 很不好用
                     self.turn += 1
-                    pos = pag.locateOnScreen('../data/yys/fight.png', confidence=0.8,
+                    pos = pag.locateOnScreen(QSS.screenshot + 'fight.png', confidence=0.8,
                                              region=(point[0]-160, point[1]-260, 370, 260))
                     x = random.randint(pos[0], pos[0] + pos[2])
                     y = random.randint(pos[1], pos[1] + pos[3])
@@ -82,10 +83,5 @@ class OnHook(QThread):
                 # 模拟点击
                 pag.click(x, y, duration=move_time, clicks=click_num,
                           interval=click_time)  # 点击
-                self.pw.rstPrintf("%s, %s, 点击位置: (%s, %s)"
-                      % (pic, self.turn, x, y))
-
-                if self.turn == self.times:
-                    self.finished.emit()
 
                 gevent.sleep(0.9)  # 该次协程结束后卡一定时间防止二次识别成功，在切换界面后误触

@@ -5,7 +5,7 @@
 @Note : 
 '''
 
-import win32gui
+import win32gui,os
 from PyQt5.QtCore import QTimer
 from datetime import datetime
 from UI_Window import UI_Window
@@ -19,11 +19,18 @@ class Window(UI_Window):
         self.time_start = datetime.now()
         self.check_timer = QTimer()
 
+        # self.startGame('../', QSS.game)
         self.funcLink()
         self.check_timer.start(35)
 
+    def startGame(self, path, filename):
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                if filename in file:
+                    os.system(os.path.abspath((os.path.join(root, file))))
+
     def funcLink(self):
-        self.button_plan.clicked.connect(self.selectPlan)
+        self.button_plan.clicked.connect(self.openSettings)
         self.button_control.clicked.connect(self.controlOnHook)
         self.check_timer.timeout.connect(self.followHang)
 
@@ -37,14 +44,16 @@ class Window(UI_Window):
         #         self.setVisible(False)
         if hwnd:
             rect = win32gui.GetWindowRect(hwnd)
-            self.move(rect[0] - 75 - self.button_plan.x(), rect[1]) #使可视化区域与窗口始终保持相同距离而不是窗体
+            self.move(rect[0] - 10 - self.button_plan.width() -
+                      self.mainpage.x() - self.button_plan.x(), rect[1]) #使可视化区域与窗口始终保持相同距离而不是窗体
         else:
             self.hide()
 
-    def selectPlan(self):
-        # opt = EmbedWindow(self)
-        # opt.show()
-        print(1)
+    def openSettings(self):
+        if self.settings.isVisible():
+            self.settings.fall()
+        else:
+            self.settings.rise(3)
 
     def timesDisplay(self, val):
         self.label_count.setText(str(val))

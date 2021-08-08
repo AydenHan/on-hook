@@ -5,10 +5,12 @@
 @Note : 样式与路径
 '''
 img = "../img/"
+game = 'Launch.exe'
 
 startBtn = img + "icon/start.png"
 stopBtn = img + "icon/stop.png"
-toastBtn = img + "icon/time.png"
+timeIcon = img + "icon/time.png"
+settingsIcon = img + "icon/settings.png"
 
 screenshot = img + "screenshot/"
 

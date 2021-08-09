@@ -71,5 +71,6 @@ class UI_Window(QWidget):
     def stopStatus(self):
         self.button_control.setIcon(QSS.stopBtn)
         self.button_control.setIconSize(42, 42)
+        self.info.fall()
 
 

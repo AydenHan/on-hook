@@ -402,3 +402,4 @@ class CustomButton(StyledButton):
 class CustomToast(Toast):
     def __init__(self, parent, text=None, icon=None):
         super().__init__(parent, text, icon)
+

@@ -5,11 +5,167 @@
 @Note : 自定义类
 '''
 
-from pyqt5Custom import StyledButton,Toast,ToggleSwitch, Animation, AnimationHandler,ImageBox
-from PyQt5.QtCore    import Qt
+from pyqt5Custom import StyledButton,Toast, Animation, AnimationHandler,ImageBox
+from PyQt5.QtCore    import Qt,pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtGui     import QPainter, QPen, QBrush, QColor, QFont
 
+
+class SegmentedButton(QWidget):
+
+    clicked = pyqtSignal(int)
+
+    def __init__(self, radio=False):
+        super().__init__()
+
+        self.styleDict = {
+            "default" : {
+                "background-image" : None,
+                "background-color" : (255, 255, 255),
+
+                "border-color"  : (0, 0, 0),
+                "border-width"  : 1,
+                "border-radius" : 6,
+                "radius-corners" : (True, True, True, True),
+
+                "font-family" : None,
+                "font-size"   : 12,
+                "font-weight" : "regular",
+                "color"       : (0, 0, 0),
+
+                "drop-shadow-radius" : 0,
+                "drop-shadow-offset" : (0, 0),
+                "drop-shadow-alpha"  : 120,
+
+                "click-effect-radius" : 500,
+                "click-effect-color"  : (0, 0, 0, 90),
+
+                "render-fast"      : False,
+                "render-aa"        : True,
+                "font-subpixel-aa" : False
+            },
+
+            "hover" : {
+                "background-image" : None,
+                "background-color" : (245, 245, 245),
+
+                "border-color"  : (0, 0, 0),
+                "border-width"  : 1,
+                "border-radius" : 11,
+
+                "font-size"   : 12,
+                "font-weight" : "regular",
+                "color"       : (0, 0, 0),
+
+                "drop-shadow-radius" : 0,
+                "drop-shadow-offset" : (0, 0),
+                "drop-shadow-alpha"  : 120
+            },
+
+            "press" : {
+                "background-image" : None,
+                "background-color" : (228, 228, 228),
+
+                "border-color"  : (0, 0, 0),
+                "border-width"  : 1,
+                "border-radius" : 11,
+
+                "font-size"   : 12,
+                "font-weight" : "regular",
+                "color"       : (0, 0, 0),
+
+                "drop-shadow-radius" : 0,
+                "drop-shadow-offset" : (0, 0),
+                "drop-shadow-alpha"  : 120
+            },
+
+            "check-hover" : {
+                "background-image" : None,
+                "background-color" : (245, 245, 245),
+
+                "border-color"  : (0, 0, 0),
+                "border-width"  : 1,
+                "border-radius" : 11,
+
+                "font-size"   : 12,
+                "font-weight" : "regular",
+                "color"       : (0, 0, 0),
+
+                "drop-shadow-radius" : 0,
+                "drop-shadow-offset" : (0, 0),
+                "drop-shadow-alpha"  : 120
+            },
+        }
+
+        self.radio = radio
+
+        self._buttons = list()
+
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+        self.layout.setContentsMargins(2, 2, 2, 2)
+        self.layout.setSpacing(0)
+
+    def setStyleDict(self, styledict, state=None):
+        if state is None:
+            for k in styledict:
+                self.styleDict["default"][k] = styledict[k]
+                self.styleDict["hover"][k] = styledict[k]
+                self.styleDict["press"][k] = styledict[k]
+                self.styleDict["check-hover"][k] = styledict[k]
+        else:
+            for k in styledict:
+                self.styleDict[state][k] = styledict[k]
+
+    def addButton(self, text="", icon=None, tag=None):
+        btn = StyledButton(text=text, icon=None)
+        btn.setStyleDict(self.styleDict["default"])
+        btn.setStyleDict(self.styleDict["hover"], "hover")
+        btn.setStyleDict(self.styleDict["press"], "press")
+        btn.setStyleDict(self.styleDict["check-hover"], "check-hover")
+        if self.radio:
+            btn.setCheckable(True)
+
+        if tag is None: tag = id(btn)
+        self._buttons.append((tag, btn))
+        self.layout.addWidget(btn, alignment=Qt.AlignHCenter)
+
+        if len(self._buttons) == 1:
+            btn.setStyleDict({"radius-corners":(True, True, False, False)})
+        else:
+            if len(self._buttons) >= 3:
+                btnPrev = self._buttons[-2][1]
+                btnPrev.setStyleDict({"radius-corners":(False, False, False, False)})
+            btn.setStyleDict({"radius-corners":(False, False, True, True)})
+
+        for btnn in self._buttons:
+            btnn[1].setFixedSize(self.width(), self.height()/len(self._buttons))
+
+        @btn.clicked.connect
+        def slot():
+            self.clicked.emit(self._clicked(tag))
+
+        l = len(self._buttons)
+        self.layout.setContentsMargins(0, l*2, 0, l*2)
+        return btn
+
+    def getByTag(self, tag):
+        for btn in self._buttons:
+            if btn[0] == tag: return btn[1]
+
+    def _clicked(self, tag):
+        i = 0
+        num = 0
+        for btn in self._buttons:
+            i += 1
+            if btn[0] != tag:
+                if btn[1].isChecked():
+                    btn[1].anim_press.start(reverse=True)
+                    btn[1]._was_checked = False
+                    btn[1].setChecked(False)
+            else:
+                num = i
+        return num
 
 # —————————————————————————————以下参数需要修改—————————————————————————————#
 class track:
@@ -23,7 +179,8 @@ class DynamicWidget(QWidget):
     def __init__(self, parent, text="", icon=None, closeButton=True):
         super().__init__(parent)
         # —————————————————————————————以下参数需要修改—————————————————————————————#
-        self.setFixedSize(150,210)
+        self.setFixedSize(150,230)
+        speed = 3.3
 
         w = self.width()
         h = self.height()
@@ -53,7 +210,8 @@ class DynamicWidget(QWidget):
         self.layout.addWidget(self.titlewdt, alignment=Qt.AlignTop)
 
         self.title = text
-        self.titleLbl = QLabel(text)
+        self.titleLbl = QLabel("""<span style='font-size:17px; font-family:SimSun;
+            font-weight: bold; color:rgb(255,255,255);'>%s</span>""" % text)
         self.titlelyt.addWidget(self.titleLbl, alignment=Qt.AlignCenter)
 
         self._icon = None
@@ -63,6 +221,7 @@ class DynamicWidget(QWidget):
         self.conwdt = QWidget()
         self.conlyt = QVBoxLayout()
         self.conlyt.setContentsMargins(5, 0, 0, 0)
+        self.conlyt.setAlignment(Qt.AlignTop)
         self.conwdt.setLayout(self.conlyt)
         self.layout.addWidget(self.conwdt, alignment=Qt.AlignTop)
 
@@ -89,49 +248,42 @@ class DynamicWidget(QWidget):
         self.risen = False
         self.hide()
         self.anim = AnimationHandler(self, 0, 1, Animation.easeOutQuart)
-        # —————————————————————————————以下参数需要修改—————————————————————————————#
-        self.anim.speed = 3.3
-        self.customContent()
+        self.anim.speed = speed
+        
+        self.customContent()    # 填充内容
 
-    def customContent(self):     #自定义内容
-        # self.w1 = QWidget()
-        # self.w2 = QWidget()
-        # self.w3 = QWidget()
-        # self.conlyt.addWidget(self.w1)
-        # self.conlyt.addWidget(self.w2)
-        # self.conlyt.addWidget(self.w3)
-        self.layout_content1 = QHBoxLayout()
-        self.layout_content2 = QHBoxLayout()
-        self.layout_content3 = QHBoxLayout()
-        self.conlyt.addLayout(self.layout_content1)
-        self.conlyt.addLayout(self.layout_content2)
-        self.conlyt.addLayout(self.layout_content3)
-        self.content_style = '''
-            QLabel{
-                color:#FFFFFF;
-                font-size:18px;
-                font-weight:bold;
-                font-family:'SimSun';
-            }'''
-        self.content1 = QLabel('御魂')
-        self.content2 = QLabel('突破')
-        self.content3 = QLabel('困28')
-        self.content1.setStyleSheet(self.content_style)
-        self.content2.setStyleSheet(self.content_style)
-        self.content3.setStyleSheet(self.content_style)
-        self.layout_content1.addWidget(self.content1, alignment=Qt.AlignLeft)
-        self.layout_content2.addWidget(self.content2, alignment=Qt.AlignLeft)
-        self.layout_content3.addWidget(self.content3, alignment=Qt.AlignLeft)
-        self.switch1 = ToggleSwitch(style="ios")
-        self.switch2 = ToggleSwitch('', 'ios', False)
-        self.switch3 = ToggleSwitch('', 'android', False)
-        self.switch1.raise_()
-        self.switch1.setFixedWidth(120)
-        self.switch2.setFixedWidth(120)
-        self.switch3.setFixedWidth(120)
-        self.layout_content1.addWidget(self.switch1)
-        self.layout_content2.addWidget(self.switch2)
-        self.layout_content3.addWidget(self.switch3)
+    # 自定义内容
+    def customContent(self):     
+        self.conlyt.addWidget(QLabel('''<p style='font-size:17px; font-family:SimSun;
+            color:rgb(255,255,255);'>挂机方案</p>'''),alignment=Qt.AlignHCenter)
+        self.switch_plan = SegmentedButton(radio=True)
+        self.switch_plan.setFixedSize(110, 110)
+        self.switch_plan.setStyleDict({
+            "background-color": (255, 255, 255),
+            "border-color": (0, 122, 255),
+            "border-radius": 6,
+            "color": (0, 122, 255),
+            "font-family": "SF Pro Display",
+            "font-size": 18,
+            "font-subpixel-aa": True
+        })
+        self.switch_plan.setStyleDict({
+            "color": (107, 178, 255),
+        }, "hover")
+        self.switch_plan.setStyleDict({
+            "background-color": (0, 122, 255),
+            "color": (255, 255, 255),
+        }, "press")
+        self.switch_plan.setStyleDict({
+            "background-color": (61, 154, 255),
+            "color": (255, 255, 255),
+        }, "check-hover")
+
+        self.switch_plan.addButton("御魂")
+        self.switch_plan.addButton("突破")
+        self.switch_plan.addButton("困28")
+
+        self.conlyt.addWidget(self.switch_plan, alignment=Qt.AlignHCenter | Qt.AlignTop)
 
     def rise(self, duration):
         if self.risen: return
@@ -166,11 +318,11 @@ class DynamicWidget(QWidget):
             self._icon = icon
         self._icon.setFixedSize(20, 20)
         if self.title:
-            self.titlelyt.insertWidget(0, self._icon, alignment=Qt.AlignVCenter | Qt.AlignRight)
+            self.titlelyt.insertWidget(0, self._icon, alignment=Qt.AlignCenter)
             self.titlelyt.removeItem(self.titlelyt.itemAt(1))
             self.titlelyt.addWidget(self.titleLbl, alignment=Qt.AlignVCenter | Qt.AlignLeft)
         else:
-            self.conlyt.insertWidget(0, self._icon, alignment=Qt.AlignHCenter)
+            self.conlyt.insertWidget(0, self._icon, alignment=Qt.AlignCenter)
 
     def setIconSize(self, width, height):
         self._icon.setFixedSize(width, height)

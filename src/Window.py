@@ -18,6 +18,7 @@ class Window(UI_Window):
         self.isStart = False
         self.time_start = datetime.now()
         self.check_timer = QTimer()
+        self.plan = QSS.dailyCycle
 
         # self.startGame('../', QSS.game)
         self.funcLink()
@@ -33,6 +34,7 @@ class Window(UI_Window):
         self.button_plan.clicked.connect(self.openSettings)
         self.button_control.clicked.connect(self.controlOnHook)
         self.check_timer.timeout.connect(self.followHang)
+        self.settings.switch_plan.clicked.connect(self.selectPlan)
 
     def followHang(self):
         hwnd = win32gui.FindWindow(None, "阴阳师-网易游戏")
@@ -55,6 +57,14 @@ class Window(UI_Window):
         else:
             self.settings.rise(3)
 
+    def selectPlan(self, val):
+        if val == 1:
+            self.plan = QSS.dailyCycle
+        elif val == 2:
+            self.plan = QSS.breakCycle
+        elif val == 3:
+            self.plan = QSS.exploreCycle
+
     def timesDisplay(self, val):
         self.label_count.setText(str(val))
 
@@ -70,7 +80,7 @@ class Window(UI_Window):
 
     def startOnHook(self):
         self.timesDisplay(0)
-        self.on_hook = OnHook(self, QSS.dailyCycle)
+        self.on_hook = OnHook(self, self.plan)
         self.on_hook.times_change.connect(self.timesDisplay)
         self.time_start = datetime.now()
         self.on_hook.start()

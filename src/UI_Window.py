@@ -5,7 +5,6 @@
 @Note : 界面UI部分
 '''
 
-from pyqt5Custom import ToggleSwitch
 from UI_Custom import CustomButton,CustomToast,DynamicWidget
 from PyQt5.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout
 from PyQt5.QtCore import Qt

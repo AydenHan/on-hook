@@ -5,8 +5,9 @@
 @Note : 
 '''
 
-import win32gui,os
-from PyQt5.QtCore import QTimer
+import win32gui,os,sys
+from PyQt5.QtCore import QTimer,QFile,QStandardPaths
+from PyQt5.QtWidgets import qApp
 from datetime import datetime
 from UI_Window import UI_Window
 from SCP_OnHook import OnHook
@@ -35,21 +36,20 @@ class Window(UI_Window):
         self.button_control.clicked.connect(self.controlOnHook)
         self.check_timer.timeout.connect(self.followHang)
         self.settings.switch_plan.clicked.connect(self.selectPlan)
+        self.settings.button_shortcut.clicked.connect(self.addShortcut)
+        self.settings.button_poweroff.clicked.connect(self.quiApp)
 
     def followHang(self):
         hwnd = win32gui.FindWindow(None, "阴阳师-网易游戏")
-        # if win32gui.GetForegroundWindow() == hwnd:
-        #     if self.isVisible() == False:
-        #         self.setVisible(True)
-        # else:
-        #     if self.isVisible() == True:
-        #         self.setVisible(False)
         if hwnd:
             rect = win32gui.GetWindowRect(hwnd)
             self.move(rect[0] - 10 - self.button_plan.width() -
                       self.mainpage.x() - self.button_plan.x(), rect[1]) #使可视化区域与窗口始终保持相同距离而不是窗体
+            if self.isVisible() == False:
+                self.setVisible(True)
         else:
-            self.hide()
+            if self.isVisible() == True:
+                self.setVisible(False)
 
     def openSettings(self):
         if self.settings.isVisible():
@@ -64,6 +64,16 @@ class Window(UI_Window):
             self.plan = QSS.breakCycle
         elif val == 3:
             self.plan = QSS.exploreCycle
+
+    def addShortcut(self):
+        pathExe = sys.executable
+        pathIcon = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation) + "/" + "OnHook.lnk"
+        if not os.path.exists(pathIcon):
+            QFile.link(pathExe, pathIcon)
+
+    def quiApp(self):
+        self.close()
+        qApp.quit()
 
     def timesDisplay(self, val):
         self.label_count.setText(str(val))

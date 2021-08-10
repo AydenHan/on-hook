@@ -7,9 +7,9 @@
 
 from PyQt5.QtCore import QThread,pyqtSignal
 from datetime import datetime
-import pyautogui as pag,cv2
+import pyautogui as pag
 import random,math
-import gevent
+import gevent,cv2
 import QSS
 
 class OnHook(QThread):

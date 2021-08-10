@@ -9,6 +9,7 @@ from pyqt5Custom import StyledButton,Toast, Animation, AnimationHandler,ImageBox
 from PyQt5.QtCore    import Qt,pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtGui     import QPainter, QPen, QBrush, QColor, QFont
+import QSS
 
 
 class SegmentedButton(QWidget):
@@ -179,7 +180,7 @@ class DynamicWidget(QWidget):
     def __init__(self, parent, text="", icon=None, closeButton=True):
         super().__init__(parent)
         # —————————————————————————————以下参数需要修改—————————————————————————————#
-        self.setFixedSize(150,230)
+        self.setFixedSize(150,300)
         speed = 3.3
 
         w = self.width()
@@ -257,11 +258,11 @@ class DynamicWidget(QWidget):
         self.conlyt.addWidget(QLabel('''<p style='font-size:17px; font-family:SimSun;
             color:rgb(255,255,255);'>挂机方案</p>'''),alignment=Qt.AlignHCenter)
         self.switch_plan = SegmentedButton(radio=True)
-        self.switch_plan.setFixedSize(110, 110)
+        self.switch_plan.setFixedSize(110, 100)
         self.switch_plan.setStyleDict({
             "background-color": (255, 255, 255),
             "border-color": (0, 122, 255),
-            "border-radius": 6,
+            "border-radius": 4,
             "color": (0, 122, 255),
             "font-family": "SF Pro Display",
             "font-size": 18,
@@ -278,12 +279,33 @@ class DynamicWidget(QWidget):
             "background-color": (61, 154, 255),
             "color": (255, 255, 255),
         }, "check-hover")
-
         self.switch_plan.addButton("御魂")
         self.switch_plan.addButton("突破")
         self.switch_plan.addButton("困28")
-
         self.conlyt.addWidget(self.switch_plan, alignment=Qt.AlignHCenter | Qt.AlignTop)
+        self.conlyt.addSpacing(5)
+
+        self.button_shortcut = CustomButton('快捷方式', QSS.linkIcon)
+        self.button_shortcut.setFixedSize(105, 30)
+        self.button_shortcut.setStyleDict({
+            "font-family": "SimSun",
+            "font-size": 16,
+            "color": (18, 150, 219),
+            "border-width": 1,
+            "border-color": (0, 122, 255)
+        })
+        self.conlyt.addWidget(self.button_shortcut, alignment=Qt.AlignHCenter)
+
+        self.button_poweroff = CustomButton('退出', QSS.poweroffIcon)
+        self.button_poweroff.setFixedSize(105, 30)
+        self.button_poweroff.setStyleDict({
+            "font-family": "SimSun",
+            "font-size": 16,
+            "color": (18, 150, 219),
+            "border-width": 1,
+            "border-color": (0, 122, 255)
+        })
+        self.conlyt.addWidget(self.button_poweroff, alignment=Qt.AlignHCenter)
 
     def rise(self, duration):
         if self.risen: return
@@ -368,7 +390,7 @@ class DynamicWidget(QWidget):
             h = self.height()
             ww = self.parent().width()
             #—————————————————————————————以下参数需要修改—————————————————————————————#
-            self.setGeometry((1 - self.anim.current()) * (ww / 2 - 65), 5, w, h)
+            self.setGeometry((1 - self.anim.current()) * (ww - 65), 5, w, h)
             # self.setFixedSize(self.anim.current() * 150 + 0.01, self.anim.current() * 220 + 0.01)
 
         if not self.anim.done():

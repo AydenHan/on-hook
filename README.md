@@ -3,7 +3,7 @@ A script app for Yys (private).
 
 <font color="red">**仅用于学习。**</font>
 
-![主界面](./sample/2-1.png)![主界面](./sample/2-2.png)![主界面](./sample/2-3.png)
+![主界面](./sample/2-1.png)    ![主界面](./sample/2-2.png)    ![主界面](./sample/2-3.png)
 
 嗯，主界面如上图所示，挂在客户端的左上角，面积很小，然后改了改UI，看上去还行哈哈。
 
